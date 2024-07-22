@@ -31,7 +31,9 @@ API INFORMATION :
 
 Customer Get many Routes have {{backend_url}}/customer for Document Processing and Customers Data Extarction
 
-User Get many Routes have {{backend_url}}/users which has implmeneted the Redis Cache for a minute
+Customer Get many Routes have {{backend_url}}/customer has implmeneted the Redis Cache for a minute
+
+User Get many Routes have {{backend_url}}/users is the main crud used for front-end table data
 
 task Post Route have {{backend_url}}/tasks/schedule with body having taskId from task table having addToCart true for scehduilng/queueing and if false or id task id does not exist in database then no scehduilng/queueing {{"id": 1}}
 
