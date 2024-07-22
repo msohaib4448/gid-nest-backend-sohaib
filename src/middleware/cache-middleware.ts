@@ -13,13 +13,14 @@ export class CacheMiddleware implements NestMiddleware {
     const key = req.originalUrl;
     console.log('redisKey:', key);
     try {
+      // await this.cacheManager.set(key, {}, 100 * 1000);
       const cachedResponse: string = await this.cacheManager.get(key);
-      if (cachedResponse) {
+      if (checkRedisReturnData(cachedResponse)) {
         // Return cached response directly if available
 
         console.log(
           cachedResponse,
-          '-------------------------------Redis cached users',
+          `-------------------------------Redis cached from ${key}`,
         );
 
         return res.send(JSON.parse(cachedResponse));
@@ -34,7 +35,7 @@ export class CacheMiddleware implements NestMiddleware {
 
               console.log(
                 body,
-                '-------------------------------Redis cache updated with users',
+                `-------------------------------Redis cache updated with ${key}`,
               );
             }
           } catch (err) {

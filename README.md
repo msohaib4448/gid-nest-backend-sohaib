@@ -1,3 +1,4 @@
+# gid-nest-backend-sohaib
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
 </p>
@@ -30,7 +31,9 @@ API INFORMATION :
 
 Customer Get many Routes have {{backend_url}}/customer for Document Processing and Customers Data Extarction
 
-User Get many Routes have {{backend_url}}/users which has implmeneted the Redis Cache for a minute
+Customer Get many Routes have {{backend_url}}/customer has implmeneted the Redis Cache for a minute
+
+User Get many Routes have {{backend_url}}/users is the main crud used for front-end table data
 
 task Post Route have {{backend_url}}/tasks/schedule with body having taskId from task table having addToCart true for scehduilng/queueing and if false or id task id does not exist in database then no scehduilng/queueing {{"id": 1}}
 
@@ -74,9 +77,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 
 ## Stay in touch
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- Author - [Muhammad Sohaib](https://www.linkedin.com/in/muhammad-sohaib-706981192)
 
 ## License
 

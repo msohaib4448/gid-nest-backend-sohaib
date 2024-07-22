@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserController, UsersService } from './user.controller';
 import { User } from './user.entity';
@@ -11,10 +11,4 @@ import { CacheMiddleware } from 'src/middleware/cache-middleware';
   providers: [UsersService, CacheMiddleware],
   exports: [UsersService],
 })
-export class UserModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(CacheMiddleware)
-      .forRoutes({ path: 'users', method: RequestMethod.GET });
-  }
-}
+export class UserModule {}
