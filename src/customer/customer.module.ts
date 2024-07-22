@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CustomerController, CustomerService } from './customer.controller';
 import { User } from '../user/user.entity';
 import { Customer } from './customer.entity';
+import { CacheMiddleware } from 'src/middleware/cache-middleware';
 
 @Module({
   imports: [
@@ -13,4 +14,10 @@ import { Customer } from './customer.entity';
   controllers: [CustomerController],
   exports: [CustomerService],
 })
-export class CustomerModule {}
+export class CustomerModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(CacheMiddleware)
+      .forRoutes({ path: 'customer', method: RequestMethod.GET });
+  }
+}

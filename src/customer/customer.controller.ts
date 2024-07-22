@@ -170,14 +170,27 @@ async function extractDetailsByDocument(page: PDFPageProxy) {
     .map((item: any) => item.str)
     .join(' !@#$% ');
 
-  const customerExtarctedText = extractedText.match(
-    'Lieferanschrift:(.*)Liefertermin',
-  )[0];
-
-  return {
-    customerTextDoc: customerExtarctedText.split(' !@#$% ')?.filter((el) => el),
-    otherTextDoc: extractedText,
-  };
+  try {
+    const customerExtarctedText = extractedText.match(
+      'Lieferanschrift:(.*)Liefertermi',
+    )[0];
+    return {
+      customerTextDoc: customerExtarctedText
+        .split(' !@#$% ')
+        ?.filter((el) => el),
+      otherTextDoc: extractedText,
+    };
+  } catch (error) {
+    const customerExtarctedText = extractedText.match(
+      'Lieferanschrift:(.*)Liefertermin',
+    )[0];
+    return {
+      customerTextDoc: customerExtarctedText
+        .split(' !@#$% ')
+        ?.filter((el) => el),
+      otherTextDoc: extractedText,
+    };
+  }
 }
 
 function getAllCustomerDetails(
@@ -221,15 +234,19 @@ function extractCustomerData(customerText: string[], elementOne: string) {
   if (firstKnownIndex !== 0 || customerText[firstKnownIndex] !== elementOne)
     return false;
 
-  const emailIndex = customerText.findIndex((element) =>
-    regex.emailPattern.test(element),
-  );
+  const emailIndex = customerText.findIndex((element) => {
+    const cleanedElement = element.replace(/\s+/g, '');
+    return regex.emailPattern.test(cleanedElement);
+  });
 
   const name = customerText[namePrefixIndex + 1];
   const streetAddress = customerText.slice(namePrefixIndex + 2, emailIndex - 1);
   const address = streetAddress.join(' ');
   const zipcodeCity = customerText[emailIndex - 1];
-  const email = customerText[emailIndex];
+  let email = customerText[emailIndex];
+  if (/\s/.test(email)) {
+    email = email.replace(/\s/g, '');
+  }
 
   if (!name || !address || !zipcodeCity || !email) return false;
 
