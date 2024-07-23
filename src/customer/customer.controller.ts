@@ -44,7 +44,7 @@ export class CustomerController {
     console.log(req.parsed);
     try {
       console.log(__dirname, '__dirname');
-      const data = readFileSync(`${__dirname}/../public/test2.pdf`);
+      const data = readFileSync(`${__dirname}/../public/newestTesttt.pdf`);
 
       const loadingTask = getDocument({
         data,
@@ -136,7 +136,7 @@ async function extractDetailsByImage(page: PDFPageProxy) {
 
   const imageData = canvas.toDataURL();
   const rectangles = [
-    { left: 0, top: 490, width: 450, height: 210 }, // Customer Detials
+    { left: 0, top: 490, width: 605, height: 250 }, // Customer Detials
     { left: 450, top: 180, width: 450, height: 540 }, // Other Details
   ];
 
@@ -171,23 +171,25 @@ async function extractDetailsByDocument(page: PDFPageProxy) {
     .join(' !@#$% ');
 
   try {
-    const customerExtarctedText = extractedText.match(
-      'Lieferanschrift:(.*)Liefertermi',
-    )[0];
+    const formattedCustomerText = getSubStringDocumentText(
+      extractedText,
+      'Lieferanschrift:',
+      'Liefertermi',
+    );
+
     return {
-      customerTextDoc: customerExtarctedText
-        .split(' !@#$% ')
-        ?.filter((el) => el),
+      customerTextDoc: formattedCustomerText,
       otherTextDoc: extractedText,
     };
   } catch (error) {
-    const customerExtarctedText = extractedText.match(
-      'Lieferanschrift:(.*)Liefertermin',
-    )[0];
+    const formattedCustomerText = getSubStringDocumentText(
+      extractedText,
+      'Lieferanschrift:',
+      'Liefertermin',
+    );
+
     return {
-      customerTextDoc: customerExtarctedText
-        .split(' !@#$% ')
-        ?.filter((el) => el),
+      customerTextDoc: formattedCustomerText,
       otherTextDoc: extractedText,
     };
   }
@@ -265,4 +267,41 @@ function extractCustomerData(customerText: string[], elementOne: string) {
   const cityName = addressArr?.length > 1 && addressArr.splice(1).join(' ');
 
   return { firstName, lastName, address, zipCode, cityName, email };
+}
+
+function formatCustomerTextDynamic(textArray) {
+  const formattedText = [];
+  let tempString = '';
+
+  for (let i = 0; i < textArray.length; i++) {
+    if (textArray[i].trim() === '') {
+      continue;
+    } else {
+      if (i + 1 < textArray.length && textArray[i + 1].trim() === '') {
+        tempString += (tempString ? ' ' : '') + textArray[i];
+      } else {
+        if (tempString) {
+          tempString += ' ' + textArray[i];
+          formattedText.push(tempString);
+          tempString = '';
+        } else {
+          formattedText.push(textArray[i]);
+        }
+      }
+    }
+  }
+
+  return formattedText;
+}
+
+function getSubStringDocumentText(extractedText, startText, endText) {
+  const customerExtarctedText = extractedText.match(
+    `${startText}(.*)${endText}`,
+  )[0];
+  console.log(customerExtarctedText, 'customerExtarctedText');
+  const filteredText = customerExtarctedText
+    .split(' !@#$% ')
+    ?.filter((el) => el);
+
+  return formatCustomerTextDynamic(filteredText);
 }
